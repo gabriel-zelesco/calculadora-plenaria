@@ -57,13 +57,13 @@ class LargestRemainder(PollsResult):
 
 if __name__ == '__main__':
     n_seats = 8
-    votes = {'a':168,'b':104,'c':72,'d':64,'e':40, 'abstention': 30}
+    votes = {'a':200,'b':1230,'c':72,'d':64,'e':40, 'abstention': 30}
     resultados = LargestRemainder(votes,n_seats)
-    print(resultados.total)
-    print(resultados.valid)
-    print(resultados.quota)
-    print(resultados.party_quota)
-    print(resultados.distribution)
-    print(resultados.remaining_seats)
-    print(resultados.remaining_distribution)
+    #print(resultados.total)
+    #print(resultados.valid)
+    #print(resultados.quota)
+    #print(resultados.party_quota)
+    #print(resultados.distribution)
+    #print(resultados.remaining_seats)
+    #print(resultados.remaining_distribution)
     print(resultados.result)
