@@ -25,8 +25,9 @@ class DhontMethod(PollsResult):
         self.order = []
         self.round = self.valid.copy()
         self.tie = self._set_cumulative_dic(value='')
+        self.limit_check = self._set_cumulative_dic(value='')
         self.report = self._set_report()
-        self.result = self._dhont()
+
         
     def _set_seats_dic(self, value=0):
         """Returns a dictionary for the seats of each party."""
@@ -60,24 +61,18 @@ class DhontMethod(PollsResult):
                 self.tie[call][party] = 'EMPATE'
             else:
                 self.tie[call][party] = ''
-    '''           
-    def _check_limit(self, party, call):
-        """Checks if the party has reached the limit."""
-        if self.seats[party] >= self.limit[party]:
-            self.round[party] = 0
-            self.report[call][party] = self.round.copy()
-            self.tie[call][party] = 'LIMITE'
-        else:
-            self.tie[call][party] = ''            
-    '''    
+   
     def _check_limit(self, call):
         """Checks if the party has reached the limit."""
         for party in self.seats.keys():
             if self.seats[party] >= self.limit[party]:
                 self.round[party] = 0
+                self.limit_check[call][party] = 'LIMITE'
+            else:
+                self.limit_check[call][party] = ''
         
 
-    def _dhont(self):
+    def dhont(self):
         """
         n_seats is the number of seats.
         self.round is a dictionary with the votes of each party for each round.
@@ -102,29 +97,22 @@ class DhontMethod(PollsResult):
             self.round[party] = self.valid[party] / (self.seats[party] + 1)
         return self.seats
 
-
-    # TODO: colocar limitador de chamadas
-    
     def print_report(self):
         """Prints the report of each round."""
         for call in self.report:
             print(f"{call}º call: {self.order[call-1]}")
             for party in self.report[call][self.order[call-1]]: 
-                print(f"\t{party}[{self.cumulative_order[call][party]}]: \
+                text = f"""\t{party}[{self.cumulative_order[call][party]}]: \
 {self.report[call][self.order[call-1]][party]:.2f} \
-{self.tie[call][party]}")  
+    {self.tie[call][party]} \
+    {self.limit_check[call][party]}"""
+                print(text)  
             print("\b")
     
 if __name__ == '__main__':
     n_seats = 8
-    votes = {'a':200,'b':980,'c':72,'d':64,'e':40, 'abstention': 30}
-    resultados = DhontMethod(votes,n_seats)
-    #print(resultados.total)
-    #print(resultados.valid)
-    #print(resultados.valid.keys())
-    #print(resultados.cumulative_order)
+    votes = {'a':200,'b':72,'c':72,'d':64,'e':40, 'abstention': 30}
+    resultados = DhontMethod(votes,n_seats, largest_remainder=True)
+    resultados.dhont()
     resultados.print_report()
-    #print(resultados.tie)
-    print(resultados.result)
-    print('-')
-    print(resultados.limit)
+    print(dir(resultados))

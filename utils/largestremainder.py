@@ -7,8 +7,8 @@ class LargestRemainder(PollsResult):
         PollsResult.__init__(self, votes, n_seats, abstention)
         self.quota = self._election_quota()
         self.party_quota = self._party_quota()
-        self.distribution = self._quota_distribution()   
-        self.remaining_seats = self.n_seats - sum(self.distribution.values())
+        self.first_distribution = self._quota_distribution()   
+        self.remaining_seats = self.n_seats - sum(self.first_distribution.values())
         self.remaining_distribution = self._remaining_distribution()
         self.result = self._result()
             
@@ -32,8 +32,8 @@ class LargestRemainder(PollsResult):
     
     def _remaining_distribution(self):
         """Returns the remaining distribution."""
-        quota_remaining = {key: self.party_quota[key] - self.distribution[key] \
-                      for key in set(self.party_quota) & set(self.distribution)}
+        quota_remaining = {key: self.party_quota[key] - self.first_distribution[key] \
+                      for key in set(self.party_quota) & set(self.first_distribution)}
         largest_remainders = nlargest(self.remaining_seats, quota_remaining, key=quota_remaining.get)
         
         remaining = {}
@@ -49,21 +49,16 @@ class LargestRemainder(PollsResult):
         """Sum the quota distribution and the remaining distribution
         to get the final result."""
         result = {}
-        for key in self.distribution:
-            result[key] = self.distribution[key] + self.remaining_distribution[key]
+        for key in self.first_distribution:
+            result[key] = self.first_distribution[key] + self.remaining_distribution[key]
         return result
         
 
 
 if __name__ == '__main__':
     n_seats = 8
-    votes = {'a':200,'b':1230,'c':72,'d':64,'e':40, 'abstention': 30}
+    votes = {'a':200,'b':400,'c':72,'d':64,'e':40, 'abstention': 30}
     resultados = LargestRemainder(votes,n_seats)
-    #print(resultados.total)
-    #print(resultados.valid)
-    #print(resultados.quota)
-    #print(resultados.party_quota)
-    #print(resultados.distribution)
-    #print(resultados.remaining_seats)
-    #print(resultados.remaining_distribution)
+    print(resultados.first_distribution)
+    print(resultados.remaining_distribution)
     print(resultados.result)
