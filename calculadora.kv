@@ -1,0 +1,66 @@
+#:kivy 1.0.9
+#:import Factory kivy.factory.Factory
+
+<Gerenciador>:
+    Inicio:
+        name: 'inicio'
+
+<NovaChapa>: 
+    title: 'Adicionar Chapa'
+    size_hint: None, None
+    size: 200, 250
+    auto_dismiss: False
+    BoxLayout:
+        orientation: 'vertical'
+        TextInput:
+            id: nome_chapa
+            hint_text: 'Nome da chapa'
+        TextInput:
+            id: valor_chapa
+            hint_text: 'Valor da chapa'
+        Button:
+            text: 'Adicionar'
+            on_release: root.adicionar_chapa()
+
+<AvisoPop>:
+    id: aviso
+    title: 'Aviso'
+    size_hint: None, None
+    size: 250, 150
+    auto_dismiss: False
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'Chapa adicionada com sucesso!'
+        Button:
+            text: 'Ok'
+            on_release: root.dismiss()
+
+<Inicio>:
+    BoxLayout:
+        orientation: 'vertical'
+        ActionBar:
+            pos_hint: {'top': 1}
+            ActionView:
+                ActionPrevious:
+                    title: 'Início'
+                    on_release: app.root.current = 'inicio'
+                ActionButton:
+                    text: 'sair'
+                    on_release: app.stop()
+                ActionSeparator:
+                    width: 1
+                ActionButton:
+                    text: 'opções'
+        
+        ScrollView:
+            BoxLayout:
+                id: quadro_chapas
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+
+        Button:
+            text: 'Adicionar chapa'
+            on_release: app.root.current = Factory.NovaChapa().open()
+

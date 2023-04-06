@@ -1,0 +1,12 @@
+Tela Inicial:
+	NaveBar:
+		-Sair
+		-Opções
+		-Resultados
+	Text: "Numero de cadeiras" , Input: (int)
+	Text: "Chapa" , Input: (str), Text: "Votos", Input: (int)
+	Button: "Adicionar Chapa"
+	
+	Button: "Limpar" , Button: "Calcular"
+
+
