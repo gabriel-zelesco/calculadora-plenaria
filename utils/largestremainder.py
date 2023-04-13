@@ -1,6 +1,6 @@
 from heapq import nlargest
 
-from pollsresult import PollsResult
+from utils.pollsresult import PollsResult
 
 class LargestRemainder(PollsResult):
     def __init__(self, votes, n_seats, abstention=True):

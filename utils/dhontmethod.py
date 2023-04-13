@@ -1,5 +1,5 @@
-from pollsresult import PollsResult
-from largestremainder import LargestRemainder
+from utils.pollsresult import PollsResult
+from utils.largestremainder import LargestRemainder
   
 
 class DhontMethod(PollsResult):
@@ -27,6 +27,7 @@ class DhontMethod(PollsResult):
         self.tie = self._set_cumulative_dic(value='')
         self.limit_check = self._set_cumulative_dic(value='')
         self.report = self._set_report()
+        self.results = self.dhont()
 
         
     def _set_seats_dic(self, value=0):
@@ -108,6 +109,18 @@ class DhontMethod(PollsResult):
     {self.limit_check[call][party]}"""
                 print(text)  
             print("\b")
+            
+    def text_report(self):
+        """Returns a text with the report of each round."""
+        text = ''
+        for call in self.report:
+            text += f"{call}º call: {self.order[call-1]} \b"
+            for party in self.report[call][self.order[call-1]]: 
+                text += f"""\t{party}[{self.cumulative_order[call][party]}]: \
+{self.report[call][self.order[call-1]][party]:.2f} \
+    {self.tie[call][party]} \
+    {self.limit_check[call][party]}"""
+        return text            
     
 if __name__ == '__main__':
     n_seats = 8
@@ -115,4 +128,3 @@ if __name__ == '__main__':
     resultados = DhontMethod(votes,n_seats, largest_remainder=True)
     resultados.dhont()
     resultados.print_report()
-    print(dir(resultados))

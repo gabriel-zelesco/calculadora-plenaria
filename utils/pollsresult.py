@@ -6,10 +6,15 @@ class PollsResult():
         self.sort = sort
         self.abstention = abstention
         self.n_seats = n_seats
-        self.votes = self._sort_votes(votes)
+        self.votes = self._format_votes(votes)
         self.total = self._total_votes()
         self.valid = self._valid_votes()
             
+    def _str_to_int(self, votes):
+        """Converts the votes from string to integer."""
+        for key in votes:
+            votes[key] = int(votes[key])
+        return votes
     
     def _sort_votes(self, votes):
         """Sort the votes from the highest to the lowest or viceversa."""
@@ -23,6 +28,11 @@ class PollsResult():
             return votes
         else:
             raise ValueError("The sort parameter must be 'desc' or 'asc'.")
+        
+    def _format_votes(self, votes):
+        votes = self._str_to_int(votes)
+        votes = self._sort_votes(votes)
+        return votes
     
     def _total_votes(self):
         """
@@ -43,7 +53,7 @@ class PollsResult():
         return valid
     
 
-if __name__ == '__main__':
+if __name__ == '__main__': 
     n_seats = 8
     votes = {'a':168,'b':233,'c':72,'d':64,'e':40, 'abstention': 100}
     resultados = PollsResult(votes,n_seats)

@@ -2,8 +2,41 @@
 #:import Factory kivy.factory.Factory
 
 <Gerenciador>:
+    Entrada:
+        name: 'entrada'
     Inicio:
         name: 'inicio'
+    Resultados:
+        name: 'resultados'
+
+<NavBar>:
+    pos_hint: {'top': 1}
+    ActionView:
+        ActionPrevious:
+            title: 'Entrada'
+            on_release: app.root.current = 'inicio'
+        ActionButton:
+            text: 'opções'
+        ActionSeparator:
+            width: 1
+        ActionButton:
+            text: 'resultados'
+            on_release: app.root.current = 'resultados'
+        ActionSeparator:
+            width: 1
+        ActionButton:
+            text: 'sair'
+            on_release: app.stop()
+
+<Entrada>:
+    BoxLayout:
+        orientation: 'vertical'
+        NavBar:
+        Label:
+            text: 'Bem vindo ao Gerenciador de Chapas'
+        Button:
+            text: 'Entrar'
+            on_release: app.root.current = 'inicio'
 
 <NovaChapa>: 
     title: 'Adicionar Chapa'
@@ -21,9 +54,14 @@
         Button:
             text: 'Adicionar'
             on_release: root.adicionar_chapa()
+        Button:
+            text: 'Calcular'
+            on_release: root.dismiss()
+        Button:
+            text: 'Cancelar'
+            on_release: root.dismiss()
 
 <AvisoPop>:
-    id: aviso
     title: 'Aviso'
     size_hint: None, None
     size: 250, 150
@@ -36,31 +74,60 @@
             text: 'Ok'
             on_release: root.dismiss()
 
+<QuadroChapas>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: self.minimum_height
+    BoxLayout:
+        size_hint_y: None
+        height: 30
+        Label:
+            id: label_chapa
+            font_size: 20
+        Label:
+            id: label_votos
+            font_size: 20
+
+
 <Inicio>:
     BoxLayout:
         orientation: 'vertical'
-        ActionBar:
-            pos_hint: {'top': 1}
-            ActionView:
-                ActionPrevious:
-                    title: 'Início'
-                    on_release: app.root.current = 'inicio'
-                ActionButton:
-                    text: 'sair'
-                    on_release: app.stop()
-                ActionSeparator:
-                    width: 1
-                ActionButton:
-                    text: 'opções'
+        NavBar:
         
         ScrollView:
-            BoxLayout:
+            QuadroChapas:
                 id: quadro_chapas
-                orientation: 'vertical'
-                size_hint_y: None
-                height: self.minimum_height
 
         Button:
             text: 'Adicionar chapa'
             on_release: app.root.current = Factory.NovaChapa().open()
+
+
+<QuadroResultado>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: self.minimum_height
+    ResultadoRodada:
+        id: resultado_rodada
+        size_hint_y: None
+        height: 30
+
+
+<ResultadoRodada>:
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: 30
+    Label:
+        id: label_call
+        font_size: 20
+
+
+<Resultados>:
+    BoxLayout:
+        orientation: 'vertical'
+        NavBar:
+
+        ScrollView:
+            QuadroResultado:
+                id: quadro_resultado
 

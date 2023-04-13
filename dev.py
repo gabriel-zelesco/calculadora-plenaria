@@ -3,11 +3,19 @@ import json
 from kivy.app import App
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.popup import Popup
 from kivy.uix.textinput import TextInput
 from kivy.uix.label import Label
 from kivy.uix.button import Button
+from kivy.uix.screenmanager import NoTransition
+from kivy.uix.actionbar import ActionBar
+from kivy.core.window import Window
+from kivy.clock import Clock
+
+from utils.dhontmethod import DhontMethod
+
 
 # Funtions
 def load_data():
@@ -22,14 +30,22 @@ def load_data():
 class Gerenciador(ScreenManager):
     pass
 
+class Entrada(Screen):
+    pass
+
+class NavBar(ActionBar):
+    pass
+
 class AvisoPop(Popup):
+    pass
+
+class QuadroChapas(BoxLayout):
     pass
    
 class NovaChapa(Popup):
-    election_data = load_data()
-    
-    def on_pre_open(self):
-        load_data()
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.election_data = load_data()   
 
     def save_data(self):
         with open('data.json', 'w') as data:
@@ -43,21 +59,79 @@ class NovaChapa(Popup):
         self.ids.valor_chapa.text = ''
         AvisoPop().open()
         self.save_data()
-    '''
-    def aviso_pop(self):
-        box = BoxLayout(orientation='vertical')
-        pop = Popup(title='Aviso',
-                      content=Label(text='Chapa adicionada com sucesso!'),
-                      size_hint=(None, None),
-                      size=(250, 200))
-        aviso.open()
-    '''
+
 
 class Inicio(Screen):
-    def on_pre_open(self):
-        self.load_data()
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.election_data = load_data()
+    
+    def on_pre_enter(self, *args):
+        self.atualiza_quadro()
+        
+           
+    def atualiza_quadro(self):
+        self.election_data = load_data()
+        self.ids.quadro_chapas.clear_widgets()
+        for chapa in self.election_data:
+            self.ids.quadro_chapas.add_widget(
+                QuadroChapas(text_chapa=chapa,
+                             text_votos=self.election_data[chapa]))
             
+    def on_pre_leave(self, *args):
+        self.ids.quadro_chapas.clear_widgets()
 
+
+
+
+class QuadroChapas(BoxLayout):
+    def __init__(self, text_chapa='', text_votos='', **kwargs):
+        super().__init__(**kwargs)
+        self.ids.label_chapa.text = text_chapa
+        self.ids.label_votos.text = text_votos
+
+
+
+class Resultados(Screen):
+    pass
+
+
+
+class QuadroResultado(BoxLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.election_data = load_data()
+        self.n_seats = 10
+        self.poll= DhontMethod(self.election_data, self.n_seats)
+        self.result = self.poll.results
+        
+        
+        #self.text = ''
+        #for call in self.poll.report:
+        #    self.ids.quadro_resultado.add_widget(ResultadoRodada(text=f'Round {call}: {self.poll.order[call-1]}'))
+            
+        '''
+        self.text = ''
+        for call in self.poll.report:
+            self.text += f'Round {call}: {self.poll.order[call-1]} \n'
+            for party in self.poll.report[call][self.poll.order[call-1]]:
+                self.text += f"""\n
+                \t{party}[{self.poll.cumulative_order[call][party]}]: \
+                {self.poll.report[call][self.poll.order[call-1]][party]:.2f} \
+                {self.poll.tie[call][party]} \
+                {self.poll.limit_check[call][party]}"""
+        '''
+        #self.add_widget(Label(text=self.text))
+        print(self.ids)
+        #print (self.poll.report)
+
+class ResultadoRodada(BoxLayout):
+    def __init__(self, text='', **kwargs):
+        super().__init__(**kwargs)
+        self.text = text
+        #self.ids.label_call.text = self.text
+
+      
 class CalculadoraApp(App):
     def build(self):
         return Gerenciador()

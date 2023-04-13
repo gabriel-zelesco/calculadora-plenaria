@@ -1,0 +1,116 @@
+#:kivy 1.0.9
+
+<Manager>:
+    InicioScreen:
+        name: 'inicio'
+    CalculadoraScreen:
+        name: 'calculadora'
+    ResultadoScreen:
+        name: 'resultado'
+    OpcoesScreen:
+        name: 'opcoes'
+
+
+<NavBar@ActionBar>:
+    pos_hint: {'top': 1}
+    ActionView:
+        ActionPrevious:
+            title: 'Inicio'
+            on_release: app.root.current = 'inicio'
+        ActionButton:
+            text: 'Calculadora'
+            on_release: app.root.current = 'calculadora'
+        ActionSeparator:
+            width: 1
+        ActionButton:
+            text: 'Resultado'
+            on_release: app.root.current = 'resultado'
+        ActionSeparator:
+            width: 1
+        ActionButton:
+            text: 'Opcoes'
+            on_release: app.root.current = 'opcoes'
+        ActionSeparator:
+            width: 1
+        ActionButton:
+            text: 'Sair'
+            on_release: app.stop()
+
+
+<InicioScreen>:
+    name: 'inicio'
+    BoxLayout:
+        orientation: 'vertical'
+        NavBar:
+        Label:
+            text: 'Inicio'
+
+
+<CalculadoraScreen>:
+    name: 'calculadora'
+    BoxLayout:
+        orientation: 'vertical'
+        NavBar:
+        ScrollView:
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                BoxChapas:
+                    id: box_chapas
+
+
+<ResultadoScreen>:
+    name: 'resultado'
+    BoxLayout:
+        orientation: 'vertical'
+        NavBar:
+        Label:
+            text: 'Resultado'
+
+
+<OpcoesScreen>:        
+    name: 'opcoes'
+    BoxLayout:
+        orientation: 'vertical'
+        NavBar:
+        Label:
+            text: 'Opcoes'
+
+<BoxChapas@BoxLayout>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: 50
+
+
+<ChapaInscrita>:
+    orientation: 'horizontal'
+    Label:
+        id: nome_chapa
+    Label:
+        id: votos_chapa
+    Button:
+        text: 'Remover'
+
+
+<BoxNovaChapa>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: 50
+    BoxLayout:
+        orientation: 'horizontal'
+        size_hint_y: None
+        height: 50
+        TextInput:
+            id: nome
+            hint_text: 'Nome'
+            multiline: False
+            size_hint_x: 0.5
+        TextInput:
+            id: votos
+            hint_text: 'Votos'
+            multiline: False
+            size_hint_x: 0.5
+        Button:
+            text: 'Adicionar'
+            on_release: root.adicionar_chapa(nome.text, votos.text)
