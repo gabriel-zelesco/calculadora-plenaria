@@ -5,16 +5,16 @@ class PollsResult():
         
         self.sort = sort
         self.abstention = abstention
-        self.n_seats = n_seats
+        self.n_seats = self._str_to_int(n_seats).get('n_places')
         self.votes = self._format_votes(votes)
         self.total = self._total_votes()
         self.valid = self._valid_votes()
             
-    def _str_to_int(self, votes):
+    def _str_to_int(self, data_dic):
         """Converts the votes from string to integer."""
-        for key in votes:
-            votes[key] = int(votes[key])
-        return votes
+        for key in data_dic:
+            data_dic[key] = int(data_dic[key])
+        return data_dic
     
     def _sort_votes(self, votes):
         """Sort the votes from the highest to the lowest or viceversa."""
@@ -54,8 +54,9 @@ class PollsResult():
     
 
 if __name__ == '__main__': 
-    n_seats = 8
+    n_seats = {"n_places": "10"}
     votes = {'a':168,'b':233,'c':72,'d':64,'e':40, 'abstention': 100}
     resultados = PollsResult(votes,n_seats)
     print(resultados.total)
     print(resultados.valid)
+    print(resultados.n_seats)
