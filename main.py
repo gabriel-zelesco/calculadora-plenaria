@@ -10,12 +10,27 @@ from kivy.clock import Clock
 from utils.dhontmethod import DhontMethod
 
 # Funtions
+def check_data(json_data):
+    if 'abstention' not in json_data:
+        json_data['abstention'] = "0"
+    return json_data
+
+def check_n_places(json_n_places):
+    if 'n_places' not in json_n_places:
+        json_n_places['n_places'] = "1"
+        return json_n_places
+    elif json_n_places['n_places'] == "0":
+        json_n_places['n_places'] = "1"
+    return json_n_places
+
 def load_data(file_path='data.json'):
     try:
         with open(file_path, 'r') as data:
             election_data = json.load(data)
     except:
-        election_data = {}
+        election_data = {}        
+        
+    election_data = check_data(election_data)   
     return election_data
 
 def save_data(data_dic, file_path='data.json'):        
@@ -119,11 +134,16 @@ class ResultadoScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.election_data = load_data()
-        self.n_places = load_data('n_places.json')
+        self.n_places = self._get_n_places()
         #Clock.schedule_once(self._finish_init)
 
     def _finish_init(self, dt):
         pass
+    
+    def _get_n_places(self):
+        self.n_places = load_data('n_places.json')
+        self.n_places = check_n_places(self.n_places)
+        return self.n_places
     
     def on_enter(self, *args):
         self.ids.box_resultados.clear_widgets()
@@ -135,20 +155,25 @@ class BoxResultadoSimples(GridLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.election_data = load_data()
-        self.n_places = load_data('n_places.json')
+        self.n_places = self._get_n_places()
         self.poll = DhontMethod(self.election_data, self.n_places, largest_remainder=True)
         self.results = self.poll.results
         
         for i in self.results:
             self.add_widget(Label(text=i))
             self.add_widget(Label(text=str(self.results[i])))
+            
+    def _get_n_places(self):
+        self.n_places = load_data('n_places.json')
+        self.n_places = check_n_places(self.n_places)
+        return self.n_places
         
 
 class BoxResultadoCompleto(GridLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.election_data = load_data()
-        self.n_places = load_data('n_places.json')
+        self.n_places = self._get_n_places()
         self.poll = DhontMethod(self.election_data, self.n_places, largest_remainder=True)
         self.report = self.poll.report
         self.tie = self.poll.tie
@@ -171,6 +196,11 @@ class BoxResultadoCompleto(GridLayout):
             self.add_widget(Label(text=''))
             self.add_widget(Label(text=''))
             self.add_widget(Label(text=''))
+            
+    def _get_n_places(self):
+        self.n_places = load_data('n_places.json')
+        self.n_places = check_n_places(self.n_places)
+        return self.n_places
                 
                 
 class CalculatorApp(App):
