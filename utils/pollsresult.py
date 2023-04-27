@@ -1,62 +1,85 @@
-
+import json
 
 class PollsResult():
-    def __init__(self, votes, n_seats, abstention=True, sort='asc'):
-        
-        self.sort = sort
-        self.abstention = abstention
-        self.n_seats = self._str_to_int(n_seats).get('n_places')
-        self.votes = self._format_votes(votes)
-        self.total = self._total_votes()
-        self.valid = self._valid_votes()
-            
-    def _str_to_int(self, data_dic):
-        """Converts the votes from string to integer."""
-        for key in data_dic:
-            data_dic[key] = int(data_dic[key])
-        return data_dic
+    '''This class is responsible for getting the data from the polls.
+    The data is get from the json files: votes.json, abstention.json,
+    n_seats.json and options.json.
+    This class is the only one that can access the json files and is the
+    superclass of the classes that will be responsible for the calculations.'''
     
-    def _sort_votes(self, votes):
-        """Sort the votes from the highest to the lowest or viceversa."""
+    def __init__(self):
+        self.sort = self.__load_data('options.json').get('sort')
+        self.n_seats = self.__get_n_seats()
+        self.votes = self.__get_votes()
+        self.abstention = self.__get_abstenion()
+        self.valid_votes = self.__sum_votes()
+        self.total_votes = self.valid_votes + self.abstention 
+    
+    def __load_data(self, file_name):
+        with open(file_name, 'r') as f:
+            return json.load(f)
+        
+    def __str_to_int(self, dict_):
+        for key in dict_:
+            dict_[key] = int(dict_[key])
+        return dict_
+    
+    def __get_abstenion(self):
+        abstention = (
+            self
+            .__str_to_int(self.__load_data('abstention.json'))
+            .get('abstention')
+        )
+        return abstention
+    
+    def __save_data(self, file_name, data):
+        with open(file_name, 'w') as f:
+            json.dump(data, f)
+    
+    def __get_n_seats(self):
+        n_seats = self.__str_to_int(self.__load_data('n_seats.json')).get('n_seats')
+        if n_seats < 1:
+            n_seats = 1
+            self.__save_data('n_seats.json', {"n_seats": f'{n_seats}'})
+        return n_seats
+        
+    
+    def __sort_votes(self, votes):
         if self.sort == 'desc':
-            ordered_votes = sorted(votes.items(), key=lambda x:x[1], reverse=True)
+            ordered_votes = sorted(
+                votes.items(),
+                key=lambda x:x[1],
+                reverse=True
+            )
             return dict(ordered_votes)
         elif self.sort == 'asc':
-            ordered_votes = sorted(votes.items(), key=lambda x:x[1], reverse=False)
+            ordered_votes = sorted(
+                votes.items(),
+                key=lambda x:x[1],
+                reverse=False
+            )
             return dict(ordered_votes)
         elif self.sort == None:
             return votes
         else:
             raise ValueError("The sort parameter must be 'desc' or 'asc'.")
-        
-    def _format_votes(self, votes):
-        votes = self._str_to_int(votes)
-        votes = self._sort_votes(votes)
+    
+    def __get_votes(self):
+        votes = self.__str_to_int(self.__load_data('votes.json'))
+        votes = self.__sort_votes(votes)
         return votes
-    
-    def _total_votes(self):
-        """
-        Returns the total number of votes.
-        If abstention is True, it counts the abstention votes in the total.
-        """
-        if self.abstention:
-            return sum(self.votes.values())
-        else:
-            return sum(self.votes.values()) - self.votes['abstention']
-        
-    def _valid_votes(self):
-        """Returns a dictionary with the valid votes
-        which are the votes without the abstention votes.
-        """
-        valid = self.votes.copy()
-        del valid['abstention']
-        return valid
-    
 
-if __name__ == '__main__': 
-    n_seats = {"n_places": "10"}
-    votes = {'a':168,'b':233,'c':72,'d':64,'e':40, 'abstention': 100}
-    resultados = PollsResult(votes,n_seats)
-    print(resultados.total)
-    print(resultados.valid)
-    print(resultados.n_seats)
+    def __sum_votes(self):
+        return sum(self.votes.values())
+
+
+
+if __name__ == '__main__':
+    resultado = PollsResult()
+    print(f'votes: {resultado.votes}')
+    print(f'abstention: {resultado.abstention}')
+    print(f'valid_votes: {resultado.valid_votes}')
+    print(f'total_votes: {resultado.total_votes}')
+    print(f'n_seats: {resultado.n_seats}')
+    print(f'sort: {resultado.sort}')
+    
