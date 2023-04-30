@@ -11,120 +11,145 @@ class DhontMethod(PollsResult):
     
     abstention: if True, it counts the abstention votes in the total.
     
-    largest_remainder: if True, it uses the largest remainder method to
+    proportional_limit: if True, it uses the largest remainder method to
     establish the limit of seats for each party.
     '''
     
-    def __init__(self, votes, n_seats, abstention=True, largest_remainder=False):
-        PollsResult.__init__(self, votes, n_seats, abstention)
-        self.largest_remainder = largest_remainder
-        self.votes = votes
-        self.limit = LargestRemainder(votes, n_seats, abstention).result
-        self.seats = self._set_seats_dic()
-        self.cumulative_order = self._set_cumulative_dic()
-        self.order = []
-        self.round = self.valid.copy()
-        self.tie = self._set_cumulative_dic(value='')
-        self.limit_check = self._set_cumulative_dic(value='')
-        self.report = self._set_report()
-        self.results = self.dhont()
-
-        
-    def _set_seats_dic(self, value=0):
-        """Returns a dictionary for the seats of each party."""
-        seats = {}
-        for key in self.valid:
-            seats[key] = value
-        return seats
-        
-    def _set_report(self):
-        """Returns a dictionary for the report of each round."""
-        report = {}
-        for i in range(1, self.n_seats + 1):
-            report[i] = {}
-        return report
-    
-    def _set_cumulative_dic(self, value=0):
-        """Returns a dictionary for the cumulative order of each round."""
-        cumulative_dic = {}
-        for i in range(1, self.n_seats + 1):
-            cumulative_dic[i] = self._set_seats_dic(value)
-        return cumulative_dic       
-    
-    
-    def _check_tie(self, max_votes, call):
-        """Checks if there is a tie in the votes."""
-        tie_list = []
-        if list(self.round.values()).count(max_votes) > 1:
-            tie_list = [k for k, v in self.round.items() if v == max_votes]
-        for party in self.tie[1].keys():
-            if party in tie_list:
-                self.tie[call][party] = 'EMPATE'
-            else:
-                self.tie[call][party] = ''
-   
-    def _check_limit(self, call):
-        """Checks if the party has reached the limit."""
-        for party in self.seats.keys():
-            if self.seats[party] >= self.limit[party]:
-                self.round[party] = 0
-                self.limit_check[call][party] = 'LIMITE'
-            else:
-                self.limit_check[call][party] = ''
+    def __init__(self,):
+        PollsResult.__init__(self)
+        self.limit = LargestRemainder().result
+        self.rounds = range(1, self.n_seats + 1)
+        self.round_report = {}
+        self.dhont()        
+        self.seats = self.round_report[self.n_seats]['seats']
+        self.call_list = self.__generate_call_list()
         
 
+    def __set_tie_dic(self):
+        """Returns an empty dictionary for the tie"""
+        tie_dic = {}
+        for party in self.parties:
+            tie_dic[party] = ''
+        return tie_dic
+    
+    def __set_limit_dic(self):
+        """Returns an empty dictionary for the limit"""
+        limit_dic = {}
+        for party in self.parties:
+            limit_dic[party] = ''
+        return limit_dic
+       
+    
+    def __set_rounds_report(self):
+        '''
+        Returns an empty dictionary for the rounds report
+        The round_report is a dictionary of dictionaries
+        '''       
+        seats_dic = {}
+        for party in self.parties:
+            seats_dic[party] = 0
+        
+        tie_dic = self.__set_tie_dic()            
+        limit_dic = self.__set_limit_dic()
+            
+        round = {'votes': self.votes.copy(),
+                 'next_votes': self.votes.copy(),
+                 'seats': seats_dic.copy(),
+                 'tie': tie_dic.copy(),
+                 'limit': limit_dic.copy(),
+                 'winner': ''}
+            
+        return round
+            
+    def __set_dhont_variables(self, call, round_report):
+            _votes = round_report[call-1]['next_votes'].copy()
+            _next_votes = _votes.copy()
+            _seats = round_report[call-1]['seats'].copy()
+            _tie = self.__set_tie_dic()
+            _limit = self.__set_limit_dic()
+            return (_votes, _next_votes, _seats, _tie, _limit)
+        
+    def __check_tie(self, max_parties, tie):
+        """Check if there is a tie."""
+        if len(max_parties) > 1:
+            for party in max_parties:
+                tie[party] = 'tie'
+        return tie
+        
+    def __check_limit(self, call):
+        """Check if the party has reached the limit."""
+        for party, seats in zip(
+            self.round_report[call]['seats'],
+            self.round_report[call]['seats'].values()):
+            
+            if seats >= self.limit[party]:
+                self.round_report[call]['limit'][party] = 'limit'
+                self.round_report[call]['next_votes'][party] = 0
+    
+    
     def dhont(self):
-        """
-        n_seats is the number of seats.
-        self.round is a dictionary with the votes of each party for each round.
-        self.order is a list with the order of the calls.
-        self.seats is a dictionary with the final result.
-        """
-        
-        for call in range(1, self.n_seats + 1):
-            if self.largest_remainder:
-                self._check_limit(call)
+        """Returns a dictionary with the seats for each party."""
+        #round_report = {}
+        for call in self.rounds:
+            if call == 1:
+                self.round_report[call-1] = self.__set_rounds_report()
             
-            max_votes = max(self.round.values())
+            _votes, _next_votes, _seats, _tie, _limit = \
+                self.__set_dhont_variables(call, self.round_report)
             
-            self._check_tie(max_votes, call)
+            
+            max_votes = max(_votes.values())
+            max_parties = [k for k, v in _votes.items() if v == max_votes]
+            # Check if there is a tie
+            _tie = self.__check_tie(max_parties, _tie)
+                        
+            party = max_parties[0] # If there is a tie, the first party wins
+            
+            _seats[party] += 1
+            _next_votes[party] = round(
+                _next_votes[party] / (_seats[party] + 1), 3)
+            
+            # Save the results of the round
+            self.round_report[call] = {'votes': _votes.copy(),
+                                  'next_votes': _next_votes.copy(),
+                                  'seats': _seats.copy(),
+                                  'tie': _tie.copy(),
+                                  'limit': _limit.copy(),
+                                  'winner': party}
+            
+            # Check if the party has reached the limit
+            if self.proportional_limit == 'True':
+                self.__check_limit(call)
+            
 
-            party = list(self.round.keys())[list(self.round.values()).index(max_votes)]      
-            
-            self.seats[party] += 1
-            self.cumulative_order[call]= self.seats.copy()
-            self.order.append(party)
-            self.report[call][party] = self.round.copy()
-            self.round[party] = self.valid[party] / (self.seats[party] + 1)
-        return self.seats
 
-    def print_report(self):
-        """Prints the report of each round."""
-        for call in self.report:
-            print(f"{call}º call: {self.order[call-1]}")
-            for party in self.report[call][self.order[call-1]]: 
-                text = f"""\t{party}[{self.cumulative_order[call][party]}]: \
-{self.report[call][self.order[call-1]][party]:.2f} \
-    {self.tie[call][party]} \
-    {self.limit_check[call][party]}"""
-                print(text)  
-            print("\b")
-            
-    def text_report(self):
-        """Returns a text with the report of each round."""
-        text = ''
-        for call in self.report:
-            text += f"{call}º call: {self.order[call-1]} \b"
-            for party in self.report[call][self.order[call-1]]: 
-                text += f"""\t{party}[{self.cumulative_order[call][party]}]: \
-{self.report[call][self.order[call-1]][party]:.2f} \
-    {self.tie[call][party]} \
-    {self.limit_check[call][party]}"""
-        return text            
+    def __generate_call_list(self):
+        ordered_calls = {}
+        for call in self.rounds:
+            ordered_calls[call] = self.round_report[call]['winner']
+        return ordered_calls
     
+    def print_report(self):
+        for call in self.round_report.keys():
+            print(f'Round {call}: {self.round_report[call]["winner"]}')
+            for party in self.parties:
+                print(f'{party}: {self.round_report[call]["votes"][party]}',
+                      f' {self.round_report[call]["tie"][party]}', 
+                      f'[{self.round_report[call]["seats"][party]}]',
+                      f' {self.round_report[call]["limit"][party]}')
+            print('\n')
+                
+
+
 if __name__ == '__main__':
-    n_seats = 8
-    votes = {'a':200,'b':72,'c':72,'d':64,'e':40, 'abstention': 30}
-    resultados = DhontMethod(votes,n_seats, largest_remainder=True)
-    resultados.dhont()
-    resultados.print_report()
+    resultados = DhontMethod()
+    print(resultados.print_report())
+    print(resultados.call_list)
+
+
+
+
+
+
+
+
