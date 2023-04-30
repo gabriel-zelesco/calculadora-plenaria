@@ -21,7 +21,7 @@ class DhontMethod(PollsResult):
         self.rounds = range(1, self.n_seats + 1)
         self.round_report = {}
         self.dhont()        
-        self.seats = self.round_report[self.n_seats]['seats']
+        self.result = self.round_report[self.n_seats]['seats']
         self.call_list = self.__generate_call_list()
         
 
