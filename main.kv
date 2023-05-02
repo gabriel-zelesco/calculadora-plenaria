@@ -1,0 +1,45 @@
+#:kivy 1.0.9
+#: import NoTransition kivy.uix.screenmanager.NoTransition
+
+<Manager>:
+    transition: NoTransition()
+    InicioScreen:
+        name: 'inicio'
+    CalculadoraScreen:
+        name: 'calculadora'
+    ResultadoScreen:
+        name: 'resultado'
+    OpcoesScreen:
+        name: 'opcoes'
+    DummyScreen:
+        name: 'dummy'
+
+
+<DummyScreen@Screen>: # dummy screen to force screenmanager to update
+    on_enter:
+        self.manager.current = 'calculadora'  # change screen after kv is initialized
+
+<NavBar@ActionBar>:
+    pos_hint: {'top': 1}
+    ActionView:
+        ActionPrevious:
+            title: 'Inicio'
+            on_release: app.root.current = 'inicio'
+        ActionButton:
+            text: 'Calculadora'
+            on_release: app.root.current = 'calculadora'
+        ActionSeparator:
+            width: 1
+        ActionButton:
+            text: 'Resultado'
+            on_release: app.root.current = 'resultado'
+        ActionSeparator:
+            width: 1
+        ActionButton:
+            text: 'Opcoes'
+            on_release: app.root.current = 'opcoes'
+        ActionSeparator:
+            width: 1
+        ActionButton:
+            text: 'Sair'
+            on_release: app.stop()

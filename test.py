@@ -8,3 +8,4 @@ print(teste_dhont.result)
 
 teste_largest = LargestRemainder()
 print(teste_largest.result)
+print(teste_largest.remaining_distribution)

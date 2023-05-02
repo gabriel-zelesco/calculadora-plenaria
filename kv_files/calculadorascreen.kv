@@ -1,0 +1,161 @@
+#:import Factory kivy.factory.Factory
+
+<CalculadoraScreen>:
+    name: 'calculadora'
+    BoxLayout:
+        id: box
+        orientation: 'vertical'
+        NavBar:
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: 20
+                Widget:  # Spacer
+                    size_hint_y: None
+                    height: 30
+                BoxNplaces:
+                    id: box_nplaces 
+                BoxAbstentions:
+                    id: box_abstentions   
+                BoxChapas:
+                    id: box_chapas
+                BoxChapaInput:
+                Button:
+                    text: 'Calcular'
+                    size_hint_y: None
+                    height: 30
+
+
+####### Box N Places ########
+
+<BoxNplaces>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: self.minimum_height
+    BoxInputCadeiras:
+        id: input_nplaces
+
+<BoxInputCadeiras>:
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: 30
+    Label:
+        text: 'Cadeiras:'
+    TextInput:
+        id: n_places
+        hint_text: 'Nº de cadeiras'
+        multiline: False
+        input_filter: 'int'
+    Button:
+        text: 'Adicionar'
+        on_release: 
+            root.parent.add_n_places(n_places.text)
+
+<BoxCadeiras>:
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: 30
+    Label:
+        text: 'Cadeiras:'
+    Label:
+        id: n_places
+    Button:
+        text: 'Editar'
+        on_release: 
+            root.parent.edit_n_places()
+
+
+########## Box Abstentions #########
+
+<BoxAbstentions>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: self.minimum_height
+    BoxInputAbstencao:
+        id: input_abstentions
+
+<BoxInputAbstencao>:
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: 30
+    Label:
+        text: 'Abstenções:'
+    TextInput:
+        id: abstentions
+        hint_text: '0'
+        multiline: False
+        input_filter: 'int'
+    Button:
+        text: 'Adicionar'
+        on_release: 
+            root.parent.add_abstentions(abstentions.text)
+
+<BoxOutputAbstencao>:
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: 30
+    Label:
+        text: 'Abstenções:'
+    Label:
+        id: abstentions
+    Button:
+        text: 'Editar'
+        on_release: 
+            root.parent.edit_abstentions()
+
+
+####### Box Chapas ########
+
+<BoxChapas@BoxLayout>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: self.minimum_height
+    spacing: 5
+
+<ChapaInscrita>:
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: 30
+    Label:
+        id: nome_chapa
+    Label:
+        id: votos_chapa
+    Button:
+        text: 'Remover'
+        on_release: root.remove_chapa()
+
+
+<BoxChapaInput@BoxLayout>
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: self.minimum_height
+    TextInput:
+        id: nome
+        multiline: False
+        size_hint_y: None
+        height: 30
+        hint_text: 'Nome'
+
+    TextInput:
+        id: votos
+        multiline: False
+        size_hint_y: None
+        height: 30
+        input_filter: 'int'
+        hint_text: 'Votos'
+
+    Button:
+        id: btn_edit
+        size_hint_y: None
+        height: 30
+        text: 'Adicionar'
+        on_release:
+            Factory.CalculadoraScreen().add_chapa(nome.text, votos.text)
+            app.root.current = 'dummy'
+
+
+
