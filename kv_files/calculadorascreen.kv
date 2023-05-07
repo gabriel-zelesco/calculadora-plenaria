@@ -13,10 +13,10 @@
                 orientation: 'vertical'
                 size_hint_y: None
                 height: self.minimum_height
-                spacing: 20
+                spacing: '20sp'
                 Widget:  # Spacer
                     size_hint_y: None
-                    height: 30
+                    height: '30sp'
                 BoxNplaces:
                     id: box_nplaces 
                 BoxAbstentions:
@@ -27,7 +27,7 @@
                 Button:
                     text: 'Calcular'
                     size_hint_y: None
-                    height: 30
+                    height: '30sp'
                     on_release: 
                         app.root.current = 'resultado_dummy'
 
@@ -44,7 +44,7 @@
 <BoxInputCadeiras>:
     orientation: 'horizontal'
     size_hint_y: None
-    height: 30
+    height: '30sp'
     Label:
         text: 'Cadeiras:'
     TextInput:
@@ -60,7 +60,7 @@
 <BoxCadeiras>:
     orientation: 'horizontal'
     size_hint_y: None
-    height: 30
+    height: '30sp'
     Label:
         text: 'Cadeiras:'
     Label:
@@ -83,7 +83,7 @@
 <BoxInputAbstencao>:
     orientation: 'horizontal'
     size_hint_y: None
-    height: 30
+    height: '30sp'
     Label:
         text: 'Abstenções:'
     TextInput:
@@ -99,7 +99,7 @@
 <BoxOutputAbstencao>:
     orientation: 'horizontal'
     size_hint_y: None
-    height: 30
+    height: '30sp'
     Label:
         text: 'Abstenções:'
     Label:
@@ -116,12 +116,12 @@
     orientation: 'vertical'
     size_hint_y: None
     height: self.minimum_height
-    spacing: 5
+    spacing: '7sp'
 
 <ChapaInscrita>:
     orientation: 'horizontal'
     size_hint_y: None
-    height: 30
+    height: '30sp'
     Label:
         id: nome_chapa
     Label:
@@ -139,21 +139,21 @@
         id: nome
         multiline: False
         size_hint_y: None
-        height: 30
+        height: '30sp'
         hint_text: 'Nome'
 
     TextInput:
         id: votos
         multiline: False
         size_hint_y: None
-        height: 30
+        height: '30sp'
         input_filter: 'int'
         hint_text: 'Votos'
 
     Button:
         id: btn_edit
         size_hint_y: None
-        height: 30
+        height: '30sp'
         text: 'Adicionar'
         on_release:
             Factory.CalculadoraScreen().add_chapa(nome.text, votos.text)
