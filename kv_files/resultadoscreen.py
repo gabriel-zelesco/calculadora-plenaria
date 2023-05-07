@@ -2,7 +2,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
-from kivy.uix.button import Button
+
 
 from utils.functions import load_data
 from utils.dhontmethod import DhontMethod
@@ -15,8 +15,7 @@ class ResultadoScreen(Screen):
     def on_enter(self, *args, **kwargs):
         self.ids.box_resultados.clear_widgets()
         self.ids.box_resultados.add_widget(BoxSumario())
-        self.ids.box_resultados.add_widget(BoxResultado())
-        #self.ids.box_resultados.add_widget(BtnRelatorio())        
+        self.ids.box_resultados.add_widget(BoxResultado())      
         self.ids.box_resultados.add_widget(BoxReport())
         
     def show_report(self):
@@ -64,8 +63,7 @@ class BoxReport(BoxLayout):
         for round in self.dhont.rounds:
             winner = self.dhont.round_report[round]['winner']
             self.add_widget(RoundWinner(round, winner))
-            self.add_widget(RoundReport(round))
-                    
+            self.add_widget(RoundReport(round))                    
 
 class RoundWinner(BoxLayout):
     def __init__(self, round, winner, **kwargs):
@@ -80,14 +78,14 @@ class RoundReport(GridLayout):
         self.dhont = DhontMethod()
         
         for party in self.dhont.parties:
+            self.add_widget(Label(text=f"[{self.dhont.round_report[round]['seats'][party]}]"))
             self.add_widget(Label(text=party))
             self.add_widget(Label(text=str(self.dhont.round_report[round]['votes'][party])))
-            self.add_widget(Label(text=str(self.dhont.round_report[round]['seats'][party])))
             self.add_widget(Label(text=str(self.dhont.round_report[round]['tie'][party])))
             self.add_widget(Label(text=str(self.dhont.round_report[round]['limit'][party])))
 
         
-        
+
         
         
              

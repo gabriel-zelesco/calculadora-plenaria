@@ -3,6 +3,7 @@ from kivy.uix.screenmanager import ScreenManager
 from kivy.lang import Builder
 
 
+
 # Loads widgets classes
 from kv_files.inicioscreen import InicioScreen
 from kv_files.calculadorascreen import CalculadoraScreen
@@ -16,7 +17,6 @@ Builder.load_file(filename='kv_files/calculadorascreen.kv')
 Builder.load_file(filename='kv_files/resultadoscreen.kv')
 Builder.load_file(filename='kv_files/opcoesscreen.kv')
 Builder.load_file(filename='kv_files/style.kv')
-
 
 
 class Manager(ScreenManager):

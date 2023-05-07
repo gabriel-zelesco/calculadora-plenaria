@@ -28,6 +28,8 @@
                     text: 'Calcular'
                     size_hint_y: None
                     height: 30
+                    on_release: 
+                        app.root.current = 'resultado_dummy'
 
 
 ####### Box N Places ########
@@ -155,7 +157,7 @@
         text: 'Adicionar'
         on_release:
             Factory.CalculadoraScreen().add_chapa(nome.text, votos.text)
-            app.root.current = 'dummy'
+            app.root.current = 'calculadora_dummy'
 
 
 

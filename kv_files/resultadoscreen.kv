@@ -1,8 +1,10 @@
 #:import Factory kivy.factory.Factory
+#:import Clock kivy.clock.Clock
 
 
 <ResultadoScreen>:
     name: 'resultado'
+    
     BoxLayout:
         orientation: 'vertical'
         NavBar:
@@ -13,7 +15,7 @@
                 orientation: 'vertical'
                 size_hint_y: None
                 height: self.minimum_height
-                spacing: 20
+                spacing: '20sp'
                 BoxResultados:
                     id: box_resultados
 
@@ -24,20 +26,17 @@
     orientation: 'vertical'
     size_hint_y: None
     height: self.minimum_height
-    spacing: 20
+    spacing: '40sp'
 
 
 
 <BoxSumario>:
     cols: 2
-    size_hint_y: None
-    height: 50
+    
 
 
 <BoxResultado>:
     cols: 5
-    size_hint_y: None
-    height: 50
     Label:
         text: 'Nome'
     Label:
@@ -56,12 +55,13 @@
     height: self.minimum_height
 
 
+
 <RoundWinner>:
     orientation: 'horizontal'
     size_hint_y: None
-    height: 50
+    height: self.minimum_height
+    padding: ['10sp' , '40sp', '10sp', '10sp']   
 
 <RoundReport>:
     cols: 5
-    size_hint_y: None
-    height: 50
+

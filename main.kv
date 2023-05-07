@@ -11,13 +11,19 @@
         name: 'resultado'
     OpcoesScreen:
         name: 'opcoes'
-    DummyScreen:
-        name: 'dummy'
+    CalculadoraDummyScreen:
+        name: 'calculadora_dummy'
+    ResultadoDummyScreen:
+        name: 'resultado_dummy'
 
 
-<DummyScreen@Screen>: # dummy screen to force screenmanager to update
+<CalculadoraDummyScreen@Screen>: # dummy screen to force screenmanager to update
     on_enter:
         self.manager.current = 'calculadora'  # change screen after kv is initialized
+
+<ResultadoDummyScreen@Screen>: # dummy screen to force screenmanager to update
+    on_enter:
+        self.manager.current = 'resultado'  # change screen after kv is initialized
 
 <NavBar@ActionBar>:
     pos_hint: {'top': 1}

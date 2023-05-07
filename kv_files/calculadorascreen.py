@@ -47,7 +47,8 @@ class CalculadoraScreen(Screen):
         self.nplaces = nplaces
         self.election_data['nplaces'] = self.nplaces
         save_data(self.election_data)
-
+    
+    
 class ChapaInscrita(BoxLayout):
     def __init__(self, nome, votos, **kwargs):
         super().__init__(**kwargs)
