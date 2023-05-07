@@ -20,6 +20,7 @@ class PollsResult():
         self.valid_votes = self.__sum_votes()
         self.total_votes = self.valid_votes + self.abstention 
         self.used_votes = self.__get_used_votes()
+        self.message = self.__make_message()
         
     
     def __check_n_seats(self):
@@ -87,6 +88,18 @@ class PollsResult():
     
     def __get_parties(self):
         return list(self.votes.keys())
+    
+    def __make_message(self):
+        if self.valid_votes == 0:
+            return "There are no valid votes."
+        elif self.parties == []:
+            return "There are no parties."
+        elif self.used_votes == 0:
+            return "There are no used votes."
+        elif self.data['votes'] == {}:
+            return "There are no votes."
+        else:
+            return None
                 
         
 
@@ -103,6 +116,7 @@ if __name__ == '__main__':
     print(f'used_votes: {resultado.used_votes}')
     print(f'proportional_limit: {resultado.proportional_limit}')
     print(f'parties: {resultado.parties}')
+    print(f'message: {resultado.message}')
     
 
     

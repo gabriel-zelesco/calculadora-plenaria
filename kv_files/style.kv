@@ -19,18 +19,57 @@
     spacing: '30sp'
     size_hint_y: None
     height: self.minimum_height
+    canvas:
+        Color:
+            rgba: 0.5, 0.5, 0.5, 0.2
+        Rectangle:
+            pos: self.pos
+            size: self.size
     
 <BoxResultado>:
     padding: '10sp'
     spacing: '20sp'
     size_hint_y: None
     height: self.minimum_height
+    canvas:
+        Color:
+            rgba: 0.5, 0.5, 0.5, 0.2
+        Rectangle:
+            pos: self.pos
+            size: self.size
 
 <RoundReport>:
     padding: '10sp'
     spacing: '20sp'
     size_hint_y: None
     height: self.minimum_height
+    canvas:
+        Color:
+            rgba: 0.5, 0.5, 0.5, 0.1
+        Rectangle:
+            pos: self.pos
+            size: self.size
 
 
-##########  CALCULADORA  ##########
+
+<TituloResultados>:
+    size_hint_y: None
+    height: '20sp'
+    Label:
+        id: titulo
+        font_size: '18sp'
+        pos_hint: {0 : 0.5}
+    Widget:
+
+<Espacamento>:
+    size_hint_y: None
+    height: self.minimum_height
+    Widget:  # Spacer
+        size_hint_y: None
+        height: '60sp'
+
+<LabelTie>:
+    color: '#ff751a'
+
+<LabelLimit>:
+    color: '#b3b3ff'

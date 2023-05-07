@@ -73,7 +73,7 @@ class DhontMethod(PollsResult):
         """Check if there is a tie."""
         if len(max_parties) > 1:
             for party in max_parties:
-                tie[party] = 'tie'
+                tie[party] = 'Empate'
         return tie
         
     def __check_limit(self, call):
@@ -83,7 +83,7 @@ class DhontMethod(PollsResult):
             self.round_report[call]['seats'].values()):
             
             if seats >= self.limit[party]:
-                self.round_report[call]['limit'][party] = 'limit'
+                self.round_report[call]['limit'][party] = 'Limite'
                 self.round_report[call]['next_votes'][party] = 0
     
     

@@ -7,20 +7,39 @@ from kivy.uix.label import Label
 from utils.functions import load_data
 from utils.dhontmethod import DhontMethod
 from utils.largestremainder import LargestRemainder
+from utils.pollsresult import PollsResult
 
 class ResultadoScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         
     def on_enter(self, *args, **kwargs):
+        self.election_data = load_data()
+        self.election = PollsResult()
+        
         self.ids.box_resultados.clear_widgets()
+        self.ids.box_resultados.add_widget(Espacamento())
+        
+        if self.election.message != None:
+           return self.ids.box_resultados.add_widget(Label(text=self.election.message))
+        
+        self.ids.box_resultados.add_widget(TituloResultados(text='Sumário'))
         self.ids.box_resultados.add_widget(BoxSumario())
-        self.ids.box_resultados.add_widget(BoxResultado())      
+        self.ids.box_resultados.add_widget(Espacamento())
+        self.ids.box_resultados.add_widget(TituloResultados(text='Resultado'))
+        self.ids.box_resultados.add_widget(BoxResultado())
+        self.ids.box_resultados.add_widget(Espacamento())
+        self.ids.box_resultados.add_widget(TituloResultados(text='Relatório'))      
         self.ids.box_resultados.add_widget(BoxReport())
         
-    def show_report(self):
-        self.ids.box_resultados.add_widget(BoxReport())
-        print('teste')
+        
+class TituloResultados(BoxLayout):
+    def __init__(self, text, **kwargs):
+        super().__init__(**kwargs)
+        self.ids.titulo.text = text 
+        
+class Espacamento(BoxLayout):
+    pass        
     
         
 class BoxSumario(GridLayout):
@@ -81,11 +100,14 @@ class RoundReport(GridLayout):
             self.add_widget(Label(text=f"[{self.dhont.round_report[round]['seats'][party]}]"))
             self.add_widget(Label(text=party))
             self.add_widget(Label(text=str(self.dhont.round_report[round]['votes'][party])))
-            self.add_widget(Label(text=str(self.dhont.round_report[round]['tie'][party])))
-            self.add_widget(Label(text=str(self.dhont.round_report[round]['limit'][party])))
+            self.add_widget(LabelTie(text=str(self.dhont.round_report[round]['tie'][party])))
+            self.add_widget(LabelLimit(text=str(self.dhont.round_report[round]['limit'][party])))
 
-        
+class LabelTie(Label):
+    pass
 
+class LabelLimit(Label):
+    pass
         
         
              
