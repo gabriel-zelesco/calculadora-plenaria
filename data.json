@@ -1,1 +1,1 @@
-{"chapa1": "30", "chapa3": "52", "abstention": "12", "chapa4": "45", "chapa5": "100", "chapa2": "60"}
+{"abstention": "12", "n_seats": "10", "abstention_as_valid": "True", "sort": "asc", "proportional_limit": "True", "votes": {"chapa1": "32", "chapa2": "25", "chapa3": "31"}}

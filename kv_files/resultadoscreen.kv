@@ -1,0 +1,68 @@
+#:import Factory kivy.factory.Factory
+#:import Clock kivy.clock.Clock
+
+
+<ResultadoScreen>:
+    name: 'resultado'
+    
+    BoxLayout:
+        orientation: 'vertical'
+        NavBar:
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: '20sp'
+
+                BoxResultados:
+                    id: box_resultados
+
+
+
+
+<BoxResultados@BoxLayout>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: self.minimum_height
+    spacing: '10sp'
+
+
+
+<BoxSumario>:
+    cols: 2
+    
+
+
+<BoxResultado>:
+    cols: 5
+    Label:
+        text: 'Nome'
+    Label:
+        text: 'Votos'
+    Label:
+        text: 'QP'
+    Label:
+        text: 'Quebras'
+    Label:
+        text: 'Total'
+
+
+<BoxReport>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: self.minimum_height
+
+
+
+<RoundWinner>:
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: self.minimum_height
+    padding: ['10sp' , '40sp', '10sp', '10sp']   
+
+<RoundReport>:
+    cols: 5
+

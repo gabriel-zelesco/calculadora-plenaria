@@ -1,0 +1,196 @@
+#:import Factory kivy.factory.Factory
+
+<CalculadoraScreen>:
+    name: 'calculadora'
+    BoxLayout:
+        id: box
+        orientation: 'vertical'
+        NavBar:
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: '20sp'
+                Widget:  # Spacer
+                    size_hint_y: None
+                    height: '30sp'
+                BoxNplaces:
+                    id: box_nplaces 
+                BoxAbstentions:
+                    id: box_abstentions 
+                BoxChapas:
+                    id: box_chapas
+                BoxChapaInput:
+                Button:
+                    text: 'Calcular'
+                    size_hint_y: None
+                    height: '30sp'
+                    on_release: 
+                        app.root.current = 'resultado_dummy'
+
+
+####### Box N Places ########
+
+<BoxNplaces>:
+    size_hint_y: None
+    height: self.minimum_height
+
+<BoxCadeiras>:
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: '30sp'
+    Label:
+        text: 'Cadeiras:'
+        color: '#ffcc99'
+    Label:
+        id: n_places
+        color: '#ffcc99'
+    Button:
+        text: 'Editar'
+        on_release: 
+            root.parent.edit_nplaces()
+
+<BoxInputCadeiras>:
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: '30sp'
+    Label:
+        text: 'Cadeiras:'
+    TextInput:
+        id: n_places
+        hint_text: '1'
+        multiline: False
+        input_filter: 'int'
+    Button:
+        text: 'Adicionar'
+        on_release: 
+            if n_places.text == '': root.parent.add_nplaces('1')
+            elif n_places.text == '0': root.parent.add_nplaces('1')
+            else: root.parent.add_nplaces(n_places.text)
+
+
+########## Box Abstentions #########
+
+<BoxAbstentions>:
+    size_hint_y: None
+    height: self.minimum_height
+
+<BoxAbstencao>:
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: '30sp'
+    Label:
+        text: 'Abstenções:'
+    Label:
+        id: abstencoes
+    Button:
+        text: 'Editar'
+        on_release: 
+            root.parent.edit_abstentions()
+
+<BoxInputAbstencoes>:
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: '30sp'
+    Label:
+        text: 'Abstenções:'
+    TextInput:
+        id: abstencoes
+        hint_text: '0'
+        multiline: False
+        input_filter: 'int'
+    Button:
+        text: 'Adicionar'
+        on_release: 
+            if abstencoes.text == '': root.parent.add_abstentions('0')
+            else: root.parent.add_abstentions(abstencoes.text)
+            app.root.current = 'calculadora_dummy'
+
+
+####### Box Chapas ########
+
+<BoxChapas@BoxLayout>:
+    orientation: 'vertical'
+    size_hint_y: None
+    height: self.minimum_height
+    spacing: '7sp'
+
+<ChapaInscrita>:
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: '30sp'
+    Label:
+        id: nome_chapa
+    Label:
+        id: votos_chapa
+    Button:
+        text: 'Remover'
+        on_release: 
+            root.remove_chapa()
+            app.root.current = 'calculadora_dummy'
+
+
+<BoxChapaInput@BoxLayout>
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: self.minimum_height
+    TextInput:
+        id: nome
+        multiline: False
+        size_hint_y: None
+        height: '30sp'
+        hint_text: 'Nome'
+
+    TextInput:
+        id: votos
+        multiline: False
+        size_hint_y: None
+        height: '30sp'
+        input_filter: 'int'
+        hint_text: 'Votos'
+
+    Button:
+        id: btn_edit
+        size_hint_y: None
+        height: '30sp'
+        text: 'Adicionar'
+        on_release:
+            if nome.text == '' or votos.text == '': Factory.CalculadoraScreen().error('Preencha todos os campos')
+            else: Factory.CalculadoraScreen().add_chapa(nome.text, votos.text)
+            nome.text = ''
+            votos.text = ''
+            app.root.current = 'calculadora_dummy'
+
+
+
+<PopupError>:
+    title: 'Erro'
+    size_hint: None, None
+    size: '300sp', '200sp'
+    auto_dismiss: True
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: 'Preencha todos os campos'
+        Button:
+            size_hint: 0.5, 0.3
+            pos_hint: {'center_x': 0.5}
+            text: 'Ok'
+            on_release: root.dismiss()
+
+
+<BoxTotalizacao>:
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: '30sp'
+    Label:
+        text: 'Votos Válidos:'
+        bold: True
+    Label:
+        id: total
+        bold: True
+    Widget:
+        size_hint_x: 1
